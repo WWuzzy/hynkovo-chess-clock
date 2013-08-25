@@ -1,157 +1,94 @@
-
 // This uses require.js to structure javascript:
 // http://requirejs.org/docs/api.html#define
 
+/* TODO: do not have a setInterval running all the time?
+ * Increment. */
+
 define(function(require) {
-    // Zepto provides nice js and DOM methods (very similar to jQuery,
-    // and a lot smaller):
-    // http://zeptojs.com/
-    // var $ = require('zepto');
+	var $ = require('zepto');
 
-    // Need to verify receipts? This library is included by default.
-    // https://github.com/mozilla/receiptverifier
-    // require('receiptverifier');
+	var PERIOD = 100;
+	var INITIAL_TIME = 5*60*1000; /* TODO: Read this from last time settings. */
 
-    // Want to install the app locally? This library hooks up the
-    // installation button. See <button class="install-btn"> in
-    // index.html
-    require('./install-button');
+	/* Define the possible states the clocks can be in. */
+	var STATE_INIT = 1;
+	var STATE_TIMER1_RUNNING = 2;
+	var STATE_TIMER2_RUNNING = 3;
+	var STATE_TIMER1_PAUSED = 4;
+	var STATE_TIMER2_PAUSED = 5;
+	var STATE_FINISHED = 6;
 
-    // Write your app here.
+	var state = {
+		state: STATE_INIT,
+		initial_time: INITIAL_TIME, /* Customizable by the user. */
+		timer1: {value: INITIAL_TIME},
+		timer2: {value: INITIAL_TIME},
+	};
 
-    // Create the battery indicator listeners
-    (function() {
-      var battery = navigator.battery || navigator.mozBattery || navigator.webkitBattery,
-          indicator, indicatorPercentage;
+	/* Register click functions on the individual players'
+	 * clocks. */
 
-      if(battery) {
-        indicator = document.getElementById('indicator'),
-        indicatorPercentage = document.getElementById('indicator-percentage');
+	getRunningTimer = function() {return state[state.which[0]];}
+	getRunningClock = function() {return $('#'+state.which[1]);}
 
-        // Set listeners for changes
-        battery.addEventListener('chargingchange', updateBattery);
-        battery.addEventListener('levelchange', updateBattery);
+	update = function() { /* This function gets called every <PERIOD> miliseconds. */
+		if (state.state != STATE_TIMER1_RUNNING && /* Currently not running. */
+			state.state != STATE_TIMER2_RUNNING) { return; }
 
-        // Update immediately
-        updateBattery();
-      }
+		if (state.state == STATE_TIMER1_RUNNING) {
+			timer = state.timer1;
+			clock = $('#clock1');
+		}
+		else if (state.state == STATE_TIMER2_RUNNING) {
+			timer = state.timer2;
+			clock = $('#clock2');
+		}
+		timer.value -= PERIOD;
+		var seconds_total = timer.value / 1000;
+		var minutes = Math.round((seconds_total - seconds_total % 60)/60);
+		var seconds = Math.floor(seconds_total - 60 * minutes);
+		if (seconds < 10) { seconds = '0' + seconds;};
+		clock.html(minutes + ':' + seconds);
+	}
 
-      function updateBattery() {
-        // Update percentage width and text
-        var level = (battery.level * 100) + '%';
-        indicatorPercentage.style.width = level;
-        indicatorPercentage.innerHTML = 'Battery: ' + level;
-        // Update charging status
-        indicator.className = battery.charging ? 'charging' : '';
-      }
-    })();
 
+	$('#clock1').click(function() {
+		if (state.state == STATE_TIMER1_RUNNING || state.state == STATE_INIT) {
+			$('#clock1').removeClass('active');
+			$('#clock2').addClass('active');
+			state.state = STATE_TIMER2_RUNNING;
+		}
+	})
 
-    // Create the list functionality
-    (function() {
-        var form = document.getElementById('item-form'),
-            itemInput = document.getElementById('item'),
-            itemList = document.getElementById('item-list'),
-            itemContainer = document.getElementById('items'),
-            hasLocalStorage = 'localStorage' in window,
-            template = '<li data-value="{item}">{item} <a href="" class="delete">Delete</a></li>',
-            items = load(),
-            phoneNumber = '8675309';
+	$('#clock2').click(function() {
+		if (state.state == STATE_TIMER2_RUNNING || state.state == STATE_INIT) {
+			$('#clock2').removeClass('active');
+			$('#clock1').addClass('active');
+			state.state = STATE_TIMER1_RUNNING;
+		}
+	})
 
-        // Do initial list items loading
-        items.forEach(function(value) {
-            addItem(value);
-        });
+    $('#pausebutton').click(function() {
+		switch(state.state) {
+			case STATE_TIMER1_PAUSED:
+				state.state = STATE_TIMER1_RUNNING;
+				$('#pausebutton').css('background', 'green');
+				break;
+			case STATE_TIMER2_PAUSED:
+				state.state = STATE_TIMER2_RUNNING;
+				$('#pausebutton').css('background', 'green');
+				break;
+			case STATE_TIMER1_RUNNING:
+				state.state = STATE_TIMER1_PAUSED;
+				$('#pausebutton').css('background', 'red');
+				break;
+			case STATE_TIMER2_RUNNING:
+				state.state = STATE_TIMER2_PAUSED;
+				$('#pausebutton').css('background', 'red');
+				break;
+		}
+	})
 
-        // Add a new item upon form submission
-        form.addEventListener('submit', function(e) {
-          e.preventDefault();
-
-          if(itemInput.value) {
-            items.push(itemInput.value);
-            save();
-            addItem(itemInput.value);
-
-            // Use the vibrate API to acknowledge the item was added
-            if('vibrate' in navigator) {
-                navigator.vibrate(200);
-            }
-
-            //  As an example of using priviledged WebAPIs, 
-            //  we'll use the systemXHR API to send the new item value
-            //  to a (fake) social site.  systemXHR is used more for 
-            //  packaged apps since hosted apps can proxy, but 
-            //  is presented here for those looking to build
-            //  a hosted app instead.
-            try {
-                var xhr = new XMLHttpRequest({
-                    mozSystem: true // use systemXHR
-                });
-                xhr.addEventListener('load', function(e) {
-                    // All good, posted to social site!
-                });
-                xhr.open('POST', 'http://areatweet.com', true);
-                xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-                xhr.send('item=' + itemInput.value);
-            }
-            catch(e){
-                console.log('XHR Error!  systemXHR not implemented or no permissions');
-            }
-            
-            
-
-            form.reset();
-          }
-
-          return false;
-        });
-
-        // Detect item deletion by event delegation
-        itemList.addEventListener('click', function(e) {
-          e.preventDefault();
-
-          if(e.target.className == 'delete') {
-            deleteItem(e.target.parentNode.getAttribute('data-value'));
-            itemList.removeChild(e.target.parentNode);
-            if(items.length == 0) {
-              itemContainer.classList.remove('has-items');
-            }
-            save();
-          }
-        });
-
-        // Adds an item into the list
-        function addItem(value) {
-            itemList.innerHTML += template.replace(/\{item\}/g, value);
-            itemContainer.classList.add('has-items');
-        }
-
-        // Saves items to localStorage
-        function save() {
-            if(hasLocalStorage) {
-                localStorage.setItem('items', JSON.stringify(items));
-            }
-        }
-
-        // Removes an item from localStorage
-        function deleteItem(value) {
-            var index = items.indexOf(value);
-            if(index != -1) {
-                items.splice(index, 1);
-            }
-        }
-
-        // Loads items from localStorage
-        function load() {
-            var items;
-            if(hasLocalStorage) {
-                try {
-                    items = JSON.parse(localStorage.getItem('items'));
-                }
-                catch(e) {}
-            }
-            return items || [];
-        }
-
-      })();
+	/* Start the loop. */
+	window.setInterval(update, PERIOD);
 });

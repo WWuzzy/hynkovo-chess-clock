@@ -23,7 +23,6 @@ input {
     height: 36px;
 }
 
-
 #wrapper {
    max-width: 300px;
    height: 96%;
@@ -37,13 +36,12 @@ input {
 	border-width: 2px;
 	overflow: hidden;
 	display: none;
-	width: 100%;
+	width: 90%; /* Account for the paddings. */
 }
 
 #time {
 	height: 100%;
 }
-
 
 #clocks {
     float: none;
@@ -63,7 +61,7 @@ input {
     -moz-box-pack: center;
     width: 100%;
 
- /* W3C compliant version of flexbox. */
+ /* W3C compliant version. */
     display:box;
     box-pack:center;
     box-align:center;
@@ -83,15 +81,20 @@ input {
 }
 
 #controls {
-	position: absolute;
-	top: 50%;
-	margin-top: -41px; /* Move up by one icon height plus half the space between clocks. */
-}
-
-#controls_wrapper {
 	width: 40px;
 	float: right;
 	height: 96%;
 	position: relative;
 	padding-top: 10px;
+}
+
+#pausebutton {
+	position: absolute;
+	top: 50%;
+	margin-top: -23px; /* Move up by half the icon height plus half the space between clocks. */
+}
+
+#settingsbutton {
+	position: absolute;
+	bottom: 0;
 }

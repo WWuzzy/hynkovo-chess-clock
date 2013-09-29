@@ -1,15 +1,18 @@
 // This uses require.js to structure javascript:
 // http://requirejs.org/docs/api.html#define
 
-/* TODO: do not have a setInterval running all the time?
- * Increment. Validate settings input (must be integer.) Beep
- * upon finish. */
+/* TODO:
+	- Do not have a setInterval running all the time?
+	- Do not show the last second as 0:00?
+ 	- Validate settings input (must be integer).
+	- Beep upon finish.
+	- Save and load used settings.
+*/
 
 define(function(require) {
 	var $ = require('zepto');
 
 	var PERIOD = 100;
-	var INITIAL_TIME = 5*60*1000; /* TODO: Read this from last time settings. */
 
 	/* Define the possible states the clocks can be in. */
 	var STATE_INIT = 1;
@@ -77,10 +80,10 @@ define(function(require) {
 		$('#pausebutton').attr('src', '/img/Play.png');
 	}
 
-	/* Register click functions on the individual players'
+	/* Register tap functions on the individual players'
 	 * clocks. */
 
-	$('#clock1').click(function() {
+	$('#clock1').tap(function() {
 		if (state.state == STATE_INIT) { // We're starting to play.
 			$('#pausebutton').attr('src', '/img/Pause.png');
 		}
@@ -92,7 +95,7 @@ define(function(require) {
 		}
 	});
 
-	$('#clock2').click(function() {
+	$('#clock2').tap(function() {
 		if (state.state == STATE_INIT) { // We're starting to play.
 			$('#pausebutton').attr('src', '/img/Pause.png');
 		}
@@ -104,7 +107,7 @@ define(function(require) {
 		}
 	});
 
-	pausebutton_click = function() {
+	pausebutton_tap = function() {
 		switch(state.state) {
 			case STATE_TIMER1_PAUSED:
 				state.state = STATE_TIMER1_RUNNING;
@@ -125,13 +128,13 @@ define(function(require) {
 		}
 	}
 
-    $('#pausebutton').click(function() {
-		pausebutton_click();
+    $('#pausebutton').tap(function() {
+		pausebutton_tap();
 	});
 
-	$('#settingsbutton').click(function() {
+	$('#settingsbutton').tap(function() {
 		if (state.state == STATE_TIMER1_RUNNING || state.state == STATE_TIMER2_RUNNING) {
-			pausebutton_click();
+			pausebutton_tap();
 		}
 		$('#time').css('display', 'none');
 		$('#settings').css('display', 'block');
@@ -140,7 +143,7 @@ define(function(require) {
 
 	/* Settings section */
 
-	$('#use_settings_button').click(function() {
+	$('#use_settings_button').tap(function() {
 		minutes = parseInt($('#minutes').val());
 		seconds = parseInt($('#seconds').val());
 		settings.initial_time = 1000 * (minutes * 60 + seconds);
@@ -150,10 +153,21 @@ define(function(require) {
 		$('#time').css('display', 'block');
 	});
 
-	$('#cancel_button').click(function() {
+	$('#cancel_button').tap(function() {
 		$('#settings').css('display', 'none');
 		$('#time').css('display', 'block');
 	});
+
+
+	/* Convert tap to click for non-touch devices. */
+
+	(function($) {
+	    if (!('ontouchend' in window)) { // Only do this if not on a touch device.
+	        $(document).delegate('body', 'click', function(e) {
+	            $(e.target).trigger('tap');
+	        });
+	    }
+	})($);
 
 	/* Populate the state and start the loop. */
 	init();

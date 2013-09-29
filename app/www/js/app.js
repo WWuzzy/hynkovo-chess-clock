@@ -2,7 +2,8 @@
 // http://requirejs.org/docs/api.html#define
 
 /* TODO: do not have a setInterval running all the time?
- * Increment. Validate settings input (must be integer.) */
+ * Increment. Validate settings input (must be integer.) Beep
+ * upon finish. */
 
 define(function(require) {
 	var $ = require('zepto');
@@ -33,19 +34,19 @@ define(function(require) {
 		state.state = STATE_INIT;
 		state.timer1.value = settings.initial_time;
 		state.timer2.value = settings.initial_time;
-		timer_to_clock(state.timer1, $('#clock1'));
-		timer_to_clock(state.timer2, $('#clock2'));
+		timer_to_clock(state.timer1, '#clock1');
+		timer_to_clock(state.timer2, '#clock2');
 		$('#pausebutton').attr('src', '/img/Pause.png');
 		$('#clock1').removeClass('active');
 		$('#clock2').removeClass('active');
 	};
 
-	timer_to_clock = function(timer, clock) {
+	timer_to_clock = function(timer, clock_selector) {
 		var seconds_total = timer.value / 1000;
 		var minutes = Math.round((seconds_total - seconds_total % 60)/60);
 		var seconds = Math.floor(seconds_total - 60 * minutes);
 		if (seconds < 10) { seconds = '0' + seconds;};
-		clock.html(minutes + ':' + seconds);
+		$(clock_selector + ' .timer').html( minutes + ':' + seconds);
 	}
 
 
@@ -55,11 +56,11 @@ define(function(require) {
 
 		if (state.state == STATE_TIMER1_RUNNING) {
 			timer = state.timer1;
-			clock = $('#clock1');
+			clock = '#clock1';
 		}
 		else if (state.state == STATE_TIMER2_RUNNING) {
 			timer = state.timer2;
-			clock = $('#clock2');
+			clock = '#clock2';
 		}
 		timer.value -= PERIOD;
 		timer_to_clock(timer, clock);

@@ -39,6 +39,8 @@ define(function(require) {
 		$('#pausebutton').attr('src', '/img/Play.png');
 		$('#clock1').removeClass('active');
 		$('#clock2').removeClass('active');
+		$('#clock1').css('color', '#dddddd');
+		$('#clock2').css('color', '#dddddd');
 	};
 
 	timer_to_clock = function(timer, clock_selector) {
@@ -63,7 +65,16 @@ define(function(require) {
 			clock = '#clock2';
 		}
 		timer.value -= PERIOD;
+		if (timer.value <= 0) {
+			finish(clock);
+		}
 		timer_to_clock(timer, clock);
+	}
+
+	finish = function(clock_selector) {
+		state.state = STATE_FINISHED;
+		$(clock_selector).css('color', 'red');
+		$('#pausebutton').attr('src', '/img/Play.png');
 	}
 
 	/* Register click functions on the individual players'

@@ -2,7 +2,7 @@
 // http://requirejs.org/docs/api.html#define
 
 /* TODO: do not have a setInterval running all the time?
- * Increment. */
+ * Increment. Validate settings input (must be integer.) */
 
 define(function(require) {
 	var $ = require('zepto');
@@ -20,16 +20,34 @@ define(function(require) {
 
 	var state = {
 		state: STATE_INIT,
-		initial_time: INITIAL_TIME, /* Customizable by the user. */
-		timer1: {value: INITIAL_TIME},
-		timer2: {value: INITIAL_TIME},
+		timer1: {value: 0}, // Set by the init function (together with timer2).
+		timer2: {value: 0},
 	};
 
-	/* Register click functions on the individual players'
-	 * clocks. */
+	var settings = { /* Editable from the GUI */
+		initial_time: 1000 * 5 * 60,
+		increment: 5000,
+	}
 
-	getRunningTimer = function() {return state[state.which[0]];}
-	getRunningClock = function() {return $('#'+state.which[1]);}
+	init = function () { /* Restart using the current settings. */
+		state.state = STATE_INIT;
+		state.timer1.value = settings.initial_time;
+		state.timer2.value = settings.initial_time;
+		timer_to_clock(state.timer1, $('#clock1'));
+		timer_to_clock(state.timer2, $('#clock2'));
+		$('#pausebutton').attr('src', '/img/Pause.png');
+		$('#clock1').removeClass('active');
+		$('#clock2').removeClass('active');
+	};
+
+	timer_to_clock = function(timer, clock) {
+		var seconds_total = timer.value / 1000;
+		var minutes = Math.round((seconds_total - seconds_total % 60)/60);
+		var seconds = Math.floor(seconds_total - 60 * minutes);
+		if (seconds < 10) { seconds = '0' + seconds;};
+		clock.html(minutes + ':' + seconds);
+	}
+
 
 	update = function() { /* This function gets called every <PERIOD> miliseconds. */
 		if (state.state != STATE_TIMER1_RUNNING && /* Currently not running. */
@@ -44,51 +62,83 @@ define(function(require) {
 			clock = $('#clock2');
 		}
 		timer.value -= PERIOD;
-		var seconds_total = timer.value / 1000;
-		var minutes = Math.round((seconds_total - seconds_total % 60)/60);
-		var seconds = Math.floor(seconds_total - 60 * minutes);
-		if (seconds < 10) { seconds = '0' + seconds;};
-		clock.html(minutes + ':' + seconds);
+		timer_to_clock(timer, clock);
 	}
 
+	/* Register click functions on the individual players'
+	 * clocks. */
 
 	$('#clock1').click(function() {
 		if (state.state == STATE_TIMER1_RUNNING || state.state == STATE_INIT) {
 			$('#clock1').removeClass('active');
 			$('#clock2').addClass('active');
+			state.timer2.value += settings.increment;
 			state.state = STATE_TIMER2_RUNNING;
 		}
-	})
+	});
 
 	$('#clock2').click(function() {
 		if (state.state == STATE_TIMER2_RUNNING || state.state == STATE_INIT) {
 			$('#clock2').removeClass('active');
 			$('#clock1').addClass('active');
+			state.timer1.value += settings.increment;
 			state.state = STATE_TIMER1_RUNNING;
 		}
-	})
+	});
 
-    $('#pausebutton').click(function() {
+	pausebutton_click = function() {
 		switch(state.state) {
 			case STATE_TIMER1_PAUSED:
 				state.state = STATE_TIMER1_RUNNING;
-				$('#pausebutton').css('background', 'green');
+				$('#pausebutton').attr('src', '/img/Pause.png');
 				break;
 			case STATE_TIMER2_PAUSED:
 				state.state = STATE_TIMER2_RUNNING;
-				$('#pausebutton').css('background', 'green');
+				$('#pausebutton').attr('src', '/img/Pause.png');
 				break;
 			case STATE_TIMER1_RUNNING:
 				state.state = STATE_TIMER1_PAUSED;
-				$('#pausebutton').css('background', 'red');
+				$('#pausebutton').attr('src', '/img/Play.png');
 				break;
 			case STATE_TIMER2_RUNNING:
 				state.state = STATE_TIMER2_PAUSED;
-				$('#pausebutton').css('background', 'red');
+				$('#pausebutton').attr('src', '/img/Play.png');
 				break;
 		}
+	}
+
+    $('#pausebutton').click(function() {
+		pausebutton_click();
+	});
+
+	$('#settingsbutton').click(function() {
+		if (state.state == STATE_TIMER1_RUNNING || state.state == STATE_TIMER2_RUNNING) {
+			pausebutton_click();
+		}
+		$('#time').css('display', 'none');
+		$('#settings').css('display', 'block');
 	})
 
-	/* Start the loop. */
+
+	/* Settings section */
+
+	$('#use_settings_button').click(function() {
+		minutes = parseInt($('#minutes').val());
+		seconds = parseInt($('#seconds').val());
+		settings.initial_time = 1000 * (minutes * 60 + seconds);
+		settings.increment = 1000 * parseInt($('#increment').val());
+		init();
+		$('#settings').css('display', 'none');
+		$('#time').css('display', 'block');
+	});
+
+	$('#cancel_button').click(function() {
+		$('#settings').css('display', 'none');
+		$('#time').css('display', 'block');
+	});
+
+	/* Populate the state and start the loop. */
+	init();
 	window.setInterval(update, PERIOD);
+
 });

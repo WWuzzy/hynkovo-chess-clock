@@ -10,6 +10,9 @@ html {
     color: #DDDDDD;
 }
 
+input {
+	float: right;
+}
 
 #clock1 {
   transform: rotate(180deg);
@@ -19,16 +22,33 @@ html {
     background: #333333;
 }
 
-#pausebutton {
+.button {
     width: 36px;
     height: 36px;
-    -webkit-border-radius: 18px;
-    -moz-border-radius: 18px;
-    border-radius: 18px; 
-    background: green;
-    margin-left: 156px;
-    margin-top: 140px; /* TODO: center */
     position: absolute;
+	float: right;
+}
+
+#pausebutton {
+    margin-top: 110px; /* TODO: center */
+    margin-left: 156px;
+}
+
+#settingsbutton {
+    margin-top: 166px;
+    margin-left: 156px;
+}
+
+#settings {
+   margin: 0;
+   position: absolute;
+   top: 10px;
+   left: 10px;
+   width: 200px; /* TODO */
+   height: 300px;
+   border-width: 2px;
+   overflow: hidden;
+   display: none;
 }
 
 

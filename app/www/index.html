@@ -17,18 +17,31 @@
 
 	<div id="wrapper">
 		<div id="settings">
-			
+			<p>
+			<label for="minutes">Minutes: </label><input type="text" id="minutes" size="3"/>
+			</p>
+			<p>
+			<label for="seconds">Seconds: </label><input type="text" id="seconds" size="3"/>
+			</p>
+			<p>
+			<label for="increment">Increment (sec): </label><input type="text" id="increment" size="3"/>
+			</p>
+			<p>
+			<button id="use_settings_button">Go!</button>
+			<button id="cancel_button">Cancel</button>
+			</p>
 		</div>
 		<div id="time">
 		    <div id="clocks">
 			  <div class="clock" id="clock1">
-			  	<div class="timer">05:00</div>
+			  	<div class="timer"></div>
 			  </div>
 			  <div class="clock" id="clock2">
-			  	<div class="timer">05:00</div>
+			  	<div class="timer"></div>
 			  </div>
 		    </div>
-			<div id="pausebutton" />
+			<img src="/img/Play.png" id="pausebutton" class="button" />
+			<img src="/img/Machine.png" id="settingsbutton" class="button" />
 		</div>
 	</div>
 

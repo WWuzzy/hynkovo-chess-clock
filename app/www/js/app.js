@@ -36,7 +36,7 @@ define(function(require) {
 		state.timer2.value = settings.initial_time;
 		timer_to_clock(state.timer1, '#clock1');
 		timer_to_clock(state.timer2, '#clock2');
-		$('#pausebutton').attr('src', '/img/Pause.png');
+		$('#pausebutton').attr('src', '/img/Play.png');
 		$('#clock1').removeClass('active');
 		$('#clock2').removeClass('active');
 	};
@@ -70,6 +70,9 @@ define(function(require) {
 	 * clocks. */
 
 	$('#clock1').click(function() {
+		if (state.state == STATE_INIT) { // We're starting to play.
+			$('#pausebutton').attr('src', '/img/Pause.png');
+		}
 		if (state.state == STATE_TIMER1_RUNNING || state.state == STATE_INIT) {
 			$('#clock1').removeClass('active');
 			$('#clock2').addClass('active');
@@ -79,6 +82,9 @@ define(function(require) {
 	});
 
 	$('#clock2').click(function() {
+		if (state.state == STATE_INIT) { // We're starting to play.
+			$('#pausebutton').attr('src', '/img/Pause.png');
+		}
 		if (state.state == STATE_TIMER2_RUNNING || state.state == STATE_INIT) {
 			$('#clock2').removeClass('active');
 			$('#clock1').addClass('active');

@@ -4,13 +4,12 @@
 /* TODO:
 	- Do not have a setInterval running all the time?
 	- Do not show the last second as 0:00?
- 	- Validate settings input (must be integer).
-	- Beep upon finish.
+ 	- Validate settings input (must be integer, default is zero).
 	- Save and load used settings.
+	- Click sound upon clock change.
 */
 
-define(function(require) {
-	var $ = require('zepto');
+define(['zepto', 'sounds'], function($, sounds) {
 
 	var PERIOD = 100;
 
@@ -66,7 +65,12 @@ define(function(require) {
 	};
 
 	timer_to_clock = function(timer, clock_selector) {
-		var seconds_total = timer.value / 1000;
+		var seconds_total = (timer.value + 999) / 1000;
+		// By adding 999 ms, we shifted the clock by 1 second in
+		// order for the clock not to show zero seconds during
+		// the last second. At the same time, we are avoiding
+		// showing too large values both at the beginning and at
+		// the end.
 		var minutes = Math.round((seconds_total - seconds_total % 60)/60);
 		var seconds = Math.floor(seconds_total - 60 * minutes);
 		if (seconds < 10) { seconds = '0' + seconds;};
@@ -91,6 +95,7 @@ define(function(require) {
 			finish(clock);
 		}
 		timer_to_clock(timer, clock);
+		beep_if_appropriate(timer);
 	}
 
 	finish = function(clock_selector) {
@@ -98,6 +103,21 @@ define(function(require) {
 		$(clock_selector).css('color', 'red');
 		$('#pausebutton').attr('src', '/img/Play.png');
 		release_wakelock();
+	}
+
+	beep_if_appropriate = function(timer) {
+
+		// Long beep when the time is out.
+		if (timer.value <= 0) {
+			sounds.play_time_expired();
+			return;
+		}
+
+		// Short beep 1s, 2s, 3s, 4s and 5s before end.
+		beep_vals = [1000, 2000, 3000, 4000, 5000];
+		for (var i = 0; i < beep_vals.length ; i++) {
+			if (timer.value == beep_vals[i]) { sounds.play_countdown(); break; }
+		}
 	}
 
 	/* Register tap functions on the individual players'

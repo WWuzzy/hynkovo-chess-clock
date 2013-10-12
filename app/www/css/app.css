@@ -55,7 +55,7 @@ input {
     height:46%;
     border: 1px solid black;
     text-align: center;
-    font-size: 54px;
+    font-size: 74px;
     display: -moz-box;
     -moz-box-align: center;
     -moz-box-pack: center;
@@ -97,4 +97,12 @@ input {
 #settingsbutton {
 	position: absolute;
 	bottom: 10px; /* Account for the padding. */
+}
+
+
+@media only screen and (max-width: 270px) {
+
+    .clock {
+        font-size: 54px;
+    }
 }

@@ -3,7 +3,6 @@
 	"name": "Hynkovo Chess Clock",
 	"description": "Hynkovo Chess Clock",
 	"launch_path": "/index.html",
-	"appcache_path": "/offline.appcache",
 	"icons": {
 		"30": "/img/icons/h_chess_clock30.png",
 		"60": "/img/icons/h_chess_clock60.png",

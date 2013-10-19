@@ -44,13 +44,12 @@ input {
 }
 
 #wrapper {
-   max-width: 300px;
    height: 96%;
-   max-height: 500px;
    padding-top:10px;
 }
 
 #settings {
+	max-width: 300px;
 	padding-left: 10px;
 	padding-right: 10px;
 	border-width: 2px;

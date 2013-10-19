@@ -17,12 +17,14 @@
 
 	<div id="wrapper">
 		<div id="settings">
-			<p><label for="minutes">Minutes: </label><input type="text" id="minutes" size="3"/></p>
-			<p><label for="seconds">Seconds: </label><input type="text" id="seconds" size="3"/></p>
-			<p><label for="increment">Increment (sec): </label><input type="text" id="increment" size="3"/></p>
+			<p><label for="minutes">Minutes: </label><input type="number" id="minutes"/></p>
+			<p><label for="seconds">Seconds: </label><input type="number" id="seconds"/></p>
+			<p><label for="increment">Increment (sec): </label><input type="number" id="increment"/></p>
 			<p>
-				<button id="use_settings_button">Go!</button>
-				<button id="cancel_button">Cancel</button>
+				<div id="settings_buttons">
+					<div id="cancel_settings_button" class="button_in_settings">Cancel</div>
+					<div id="use_settings_button" class="button_in_settings">Go!</div>
+				</div>
 			</p>
 		</div>
 		<div id="time">

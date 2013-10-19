@@ -23,6 +23,26 @@ input {
     height: 36px;
 }
 
+#settings_buttons {
+	margin-top: 40px;
+}
+
+.button_in_settings {
+	width: 100px;
+	height: 56px;
+	border: 1px solid #DDDDDD;
+	background: #222222;
+	padding: 4px;
+	text-align: center;
+	line-height: 56px;
+	vertical-align: middle;
+	cursor: pointer;
+}
+
+#cancel_settings_button {
+	float: right;
+}
+
 #wrapper {
    max-width: 300px;
    height: 96%;
@@ -37,6 +57,12 @@ input {
 	overflow: hidden;
 	display: none;
 	width: 90%; /* Account for the paddings. */
+	font-size: 24px;
+}
+#settings input
+{
+	font-size:24px;
+	width: 36px;
 }
 
 #time {
@@ -99,10 +125,23 @@ input {
 	bottom: 10px; /* Account for the padding. */
 }
 
+.invalid_input {
+	border: 2px solid red;
+}
+
 
 @media only screen and (max-width: 270px) {
 
-    .clock {
-        font-size: 54px;
-    }
+	.clock {font-size: 54px;}
+
+	#settings {font-size: 16px;}
+
+	#settings input {font-size:16px;}
+
+	.button_in_settings {
+		width: 74px;
+		height: 30px;
+		line-height: 30px;
+	}
+
 }

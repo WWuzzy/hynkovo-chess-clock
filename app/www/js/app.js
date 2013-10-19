@@ -3,13 +3,14 @@
 
 /* TODO:
 	- Do not have a setInterval running all the time?
-	- Do not show the last second as 0:00?
  	- Validate settings input (must be integer, default is zero).
 	- Save and load used settings.
 	- Click sound upon clock change.
+	- Enable/Disable sound in settings. (?)
+	- There's a 1-second inconsistency somewhere
 */
 
-define(['zepto', 'sounds'], function($, sounds) {
+define(['zepto', 'sounds', 'validation'], function($, sounds, validation) {
 
 	var PERIOD = 100;
 
@@ -109,14 +110,17 @@ define(['zepto', 'sounds'], function($, sounds) {
 
 		// Long beep when the time is out.
 		if (timer.value <= 0) {
-			sounds.play_time_expired();
+			setTimeout(sounds.play_time_expired, 10); // Ensure asynchronous execution.
 			return;
 		}
 
-		// Short beep 1s, 2s, 3s, 4s and 5s before end.
-		beep_vals = [1000, 2000, 3000, 4000, 5000];
+		// Short beep 1s, 2s, 3s, and 4s before end.
+		beep_vals = [1000, 2000, 3000, 4000];
 		for (var i = 0; i < beep_vals.length ; i++) {
-			if (timer.value == beep_vals[i]) { sounds.play_countdown(); break; }
+			if (timer.value == beep_vals[i]) {
+				setTimeout(sounds.play_countdown, 10); // Ensure asynchronous execution. 
+				break;
+			}
 		}
 	}
 
@@ -190,6 +194,9 @@ define(['zepto', 'sounds'], function($, sounds) {
 	/* Settings section */
 
 	$('#use_settings_button').tap(function() {
+		if (!validation.validate_settings($('input'))) {
+			return; // Validation handles also the error display.
+		};
 		minutes = parseInt($('#minutes').val());
 		seconds = parseInt($('#seconds').val());
 		settings.initial_time = 1000 * (minutes * 60 + seconds);
@@ -199,9 +206,10 @@ define(['zepto', 'sounds'], function($, sounds) {
 		$('#time').css('display', 'block');
 	});
 
-	$('#cancel_button').tap(function() {
+	$('#cancel_settings_button').tap(function() {
 		$('#settings').css('display', 'none');
 		$('#time').css('display', 'block');
+		$('input').removeClass('invalid_input');
 	});
 
 

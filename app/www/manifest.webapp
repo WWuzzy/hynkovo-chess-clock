@@ -1,35 +1,18 @@
 {
-	"version": "0.1",
-	"name": "Your App",
-	"description": "Your new awesome Open Web App",
+	"version": "1.0",
+	"name": "Hynkovo Chess Clock",
+	"description": "Hynkovo Chess Clock",
 	"launch_path": "/index.html",
 	"appcache_path": "/offline.appcache",
 	"icons": {
-		"16": "/img/icons/mortar-16.png",
-		"48": "/img/icons/mortar-48.png",
-		"128": "/img/icons/mortar-128.png"
+		"30": "/img/icons/h_chess_clock30.png",
+		"60": "/img/icons/h_chess_clock60.png",
+		"128": "/img/icons/h_chess_clock128.png"
 	},
 	"developer": {
-		"name": "Your Name",
-		"url": "http://yourawesomeapp.com"
+		"name": "Hynek Urban",
+		"url": "https://github.com/WWuzzy/hynkovo-chess-clock/"
 	},
-	"installs_allowed_from": ["*"],
-	"locales": {
-		"es": {
-			"description": "Su nueva aplicación impresionante Open Web",
-			"developer": {
-				"url": "http://yourawesomeapp.com"
-			}
-		},
-		"it": {
-			"description": "Il vostro nuovo fantastico Open Web App",
-			"developer": {
-				"url": "http://yourawesomeapp.com"
-			}
-		}
-	},
+	"locales": {},
 	"default_locale": "en",
-	"permissions": {
-		"systemXHR": {}
-	}
 }

@@ -1,16 +1,16 @@
 CACHE MANIFEST
-# v0.1
 /index.html
 /css/app.css
-/css/install-button.css
-/img/offline.png
-/img/online.png
-/img/glyphicons-halflings-white.png
-/img/glyphicons-halflings.png
-/img/gradient.png
+/img/Machine.png
+/img/Play.png
+/img/Pause.png
+/img/icons/h_chess_clock30.png
+/img/icons/h_chess_clock60.png
+/img/icons/h_chess_clock128.png
 /js/app.js
 /js/init.js
-/js/install-button.js
 /js/lib/install.js
 /js/lib/require.js
 /js/lib/zepto.js
+/js/lib/sounds.js
+/js/lib/validation.js

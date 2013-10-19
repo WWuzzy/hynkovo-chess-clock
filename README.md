@@ -10,7 +10,6 @@ Hynkovo Chess Clock has been created using the quick start app provided by Mozil
  * app/www/js/app.js
  * app/www/js/lib/{sounds.js,validation.js}
  * app/www/css/app.css
- * app/www/manifest.webapp
 
 The source code is released under the MIT licence (see the LICENCE file). 
 

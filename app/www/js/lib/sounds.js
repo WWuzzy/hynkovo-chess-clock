@@ -17,12 +17,17 @@ define(function() {
 		samples_time_expired[i] = Math.sin( i / 15 );
 	}
 
+	var click_sound = new Audio("/sounds/click.wav");
+
 	return {
 		play_countdown: function() {
 			output.mozWriteAudio(samples_countdown);
 		},
 		play_time_expired: function() {
 			output.mozWriteAudio(samples_time_expired);
+		},
+		play_click: function() {
+			click_sound.play();
 		}
 	}
 });

@@ -118,7 +118,7 @@ define(['zepto', 'sounds', 'validation'], function($, sounds, validation) {
 		beep_vals = [1000, 2000, 3000, 4000];
 		for (var i = 0; i < beep_vals.length ; i++) {
 			if (timer.value == beep_vals[i]) {
-				setTimeout(sounds.play_countdown, 10); // Ensure asynchronous execution. 
+				setTimeout(sounds.play_countdown, 10); // Ensure asynchronous execution.
 				break;
 			}
 		}
@@ -137,6 +137,7 @@ define(['zepto', 'sounds', 'validation'], function($, sounds, validation) {
 			$('#clock2').addClass('active');
 			state.timer2.value += settings.increment;
 			state.state = STATE_TIMER2_RUNNING;
+			setTimeout(sounds.play_click, 2); // Ensure asynchronous execution.
 		}
 	});
 
@@ -150,6 +151,7 @@ define(['zepto', 'sounds', 'validation'], function($, sounds, validation) {
 			$('#clock1').addClass('active');
 			state.timer1.value += settings.increment;
 			state.state = STATE_TIMER1_RUNNING;
+			setTimeout(sounds.play_click, 2); // Ensure asynchronous execution.
 		}
 	});
 

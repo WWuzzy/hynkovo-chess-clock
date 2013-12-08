@@ -39,8 +39,8 @@ define(['zepto', 'sounds', 'validation', 'storage'], function($, sounds, validat
 	/* Pre-fill the form with current settings values.*/
 	(function () {
 		var total_seconds = settings.initial_time / 1000;
-		var minutes = Math.round((total_seconds - total_seconds % 60)/60);
-		var seconds = Math.floor(total_seconds - 60 * minutes);
+		var minutes = (total_seconds - total_seconds % 60)/60;
+		var seconds = total_seconds - 60 * minutes;
 		$('#minutes').val(minutes);
 		$('#seconds').val(seconds);
 		$('#increment').val(settings.increment / 1000);

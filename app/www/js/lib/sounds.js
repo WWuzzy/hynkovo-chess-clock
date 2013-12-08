@@ -17,7 +17,7 @@ define(function() {
 		samples_time_expired[i] = Math.sin( i / 15 );
 	}
 
-	var click_sound = new Audio("/sounds/click.wav");
+	var click_sound = new Audio("sounds/click.wav");
 
 	return {
 		play_countdown: function() {

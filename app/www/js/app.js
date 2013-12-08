@@ -56,7 +56,7 @@ define(['zepto', 'sounds', 'validation'], function($, sounds, validation) {
 		state.timer2.value = settings.initial_time;
 		timer_to_clock(state.timer1, '#clock1');
 		timer_to_clock(state.timer2, '#clock2');
-		$('#pausebutton').attr('src', '/img/Play.png');
+		$('#pausebutton').attr('src', 'img/Play.png');
 		$('#clock1').removeClass('active');
 		$('#clock2').removeClass('active');
 		$('#clock1').css('color', '#dddddd');
@@ -100,7 +100,7 @@ define(['zepto', 'sounds', 'validation'], function($, sounds, validation) {
 	finish = function(clock_selector) {
 		state.state = STATE_FINISHED;
 		$(clock_selector).css('color', 'red');
-		$('#pausebutton').attr('src', '/img/Play.png');
+		$('#pausebutton').attr('src', 'img/Play.png');
 		release_wakelock();
 	}
 
@@ -129,7 +129,7 @@ define(['zepto', 'sounds', 'validation'], function($, sounds, validation) {
 
 	$('#clock1').tap(function() {
 		if (state.state == STATE_INIT) { // We're starting to play.
-			$('#pausebutton').attr('src', '/img/Pause.png');
+			$('#pausebutton').attr('src', 'img/Pause.png');
 			acquire_wakelock();
 		}
 		if (state.state == STATE_TIMER1_RUNNING || state.state == STATE_INIT) {
@@ -145,7 +145,7 @@ define(['zepto', 'sounds', 'validation'], function($, sounds, validation) {
 
 	$('#clock2').tap(function() {
 		if (state.state == STATE_INIT) { // We're starting to play.
-			$('#pausebutton').attr('src', '/img/Pause.png');
+			$('#pausebutton').attr('src', 'img/Pause.png');
 			acquire_wakelock();
 		}
 		if (state.state == STATE_TIMER2_RUNNING || state.state == STATE_INIT) {
@@ -163,22 +163,22 @@ define(['zepto', 'sounds', 'validation'], function($, sounds, validation) {
 		switch(state.state) {
 			case STATE_TIMER1_PAUSED:
 				state.state = STATE_TIMER1_RUNNING;
-				$('#pausebutton').attr('src', '/img/Pause.png');
+				$('#pausebutton').attr('src', 'img/Pause.png');
 				acquire_wakelock();
 				break;
 			case STATE_TIMER2_PAUSED:
 				state.state = STATE_TIMER2_RUNNING;
-				$('#pausebutton').attr('src', '/img/Pause.png');
+				$('#pausebutton').attr('src', 'img/Pause.png');
 				acquire_wakelock();
 				break;
 			case STATE_TIMER1_RUNNING:
 				state.state = STATE_TIMER1_PAUSED;
-				$('#pausebutton').attr('src', '/img/Play.png');
+				$('#pausebutton').attr('src', 'img/Play.png');
 				release_wakelock();
 				break;
 			case STATE_TIMER2_RUNNING:
 				state.state = STATE_TIMER2_PAUSED;
-				$('#pausebutton').attr('src', '/img/Play.png');
+				$('#pausebutton').attr('src', 'img/Play.png');
 				release_wakelock();
 				break;
 		}

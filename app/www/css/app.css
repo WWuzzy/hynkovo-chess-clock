@@ -13,6 +13,11 @@ input {
 	float: right;
 }
 
+#settings input[type="checkbox"] {
+    -moz-transform:scale(1.5,1.5);
+    transform:scale(1.5,1.5);
+}
+
 
 .active {
     background: #333333;

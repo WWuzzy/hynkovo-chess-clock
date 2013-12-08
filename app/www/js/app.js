@@ -3,10 +3,7 @@
 
 /* TODO:
 	- Do not have a setInterval running all the time?
- 	- Validate settings input (must be integer, default is zero).
 	- Save and load used settings.
-	- Click sound upon clock change.
-	- Enable/Disable sound in settings. (?)
 	- There's a 1-second inconsistency somewhere
 */
 
@@ -31,7 +28,8 @@ define(['zepto', 'sounds', 'validation'], function($, sounds, validation) {
 
 	var settings = { /* Editable from the GUI */
 		initial_time: 1000 * 5 * 60,
-		increment: 5000
+		increment: 5000,
+		enable_sound: true
 	}
 
 
@@ -107,6 +105,8 @@ define(['zepto', 'sounds', 'validation'], function($, sounds, validation) {
 	}
 
 	beep_if_appropriate = function(timer) {
+		if (!settings.enable_sound)
+			return;
 
 		// Long beep when the time is out.
 		if (timer.value <= 0) {
@@ -137,7 +137,9 @@ define(['zepto', 'sounds', 'validation'], function($, sounds, validation) {
 			$('#clock2').addClass('active');
 			state.timer2.value += settings.increment;
 			state.state = STATE_TIMER2_RUNNING;
-			setTimeout(sounds.play_click, 2); // Ensure asynchronous execution.
+			if (settings.enable_sound) {
+				setTimeout(sounds.play_click, 2); // Ensure asynchronous execution.
+			}
 		}
 	});
 
@@ -151,7 +153,9 @@ define(['zepto', 'sounds', 'validation'], function($, sounds, validation) {
 			$('#clock1').addClass('active');
 			state.timer1.value += settings.increment;
 			state.state = STATE_TIMER1_RUNNING;
-			setTimeout(sounds.play_click, 2); // Ensure asynchronous execution.
+			if (settings.enable_sound) {
+				setTimeout(sounds.play_click, 2); // Ensure asynchronous execution.
+			}
 		}
 	});
 
@@ -196,13 +200,14 @@ define(['zepto', 'sounds', 'validation'], function($, sounds, validation) {
 	/* Settings section */
 
 	$('#use_settings_button').tap(function() {
-		if (!validation.validate_settings($('input'))) {
+		if (!validation.validate_numerical($('input[type=number]'))) {
 			return; // Validation handles also the error display.
 		};
 		minutes = parseInt($('#minutes').val());
 		seconds = parseInt($('#seconds').val());
 		settings.initial_time = 1000 * (minutes * 60 + seconds);
 		settings.increment = 1000 * parseInt($('#increment').val());
+		settings.enable_sound = $('#enable_sound').prop('checked');
 		init();
 		$('#settings').css('display', 'none');
 		$('#time').css('display', 'block');

@@ -12,7 +12,7 @@ define(['zepto'], function($) {
 			if (isNaN(number) || number < 0) {return false} else {return true};
 		};
 
-		validate_settings = function(inputs) {
+		validate_numerical = function(inputs) {
 			validated = true;
 			for (var i = 0; i < inputs.length; i++) {
 				input = inputs[i];
@@ -26,7 +26,7 @@ define(['zepto'], function($) {
 		};
 		
 		return {
-				validate_settings: validate_settings
+				validate_numerical: validate_numerical
 		}
 
 });

@@ -3,11 +3,10 @@
 
 /* TODO:
 	- Do not have a setInterval running all the time?
-	- Save and load used settings.
 	- There's a 1-second inconsistency somewhere
 */
 
-define(['zepto', 'sounds', 'validation'], function($, sounds, validation) {
+define(['zepto', 'sounds', 'validation', 'storage'], function($, sounds, validation, storage) {
 
 	var PERIOD = 100;
 
@@ -26,12 +25,27 @@ define(['zepto', 'sounds', 'validation'], function($, sounds, validation) {
 		lock: null // screen WakeLock, if required.
 	};
 
-	var settings = { /* Editable from the GUI */
-		initial_time: 1000 * 5 * 60,
-		increment: 5000,
-		enable_sound: true
-	}
+	/* Read settings from localStorage; if not present then use
+	 * the default. Settings are editable from the GUI. */
+	var settings = storage.load_settings();
+	if (settings === null) {
+		settings = {
+			initial_time: 1000 * 5 * 60,
+			increment: 5000,
+			enable_sound: true
+		};
+	};
 
+	/* Pre-fill the form with current settings values.*/
+	(function () {
+		var total_seconds = settings.initial_time / 1000;
+		var minutes = Math.round((total_seconds - total_seconds % 60)/60);
+		var seconds = Math.floor(total_seconds - 60 * minutes);
+		$('#minutes').val(minutes);
+		$('#seconds').val(seconds);
+		$('#increment').val(settings.increment / 1000);
+		$('#enable_sound').prop('checked', settings.enable_sound);
+	})();
 
 	acquire_wakelock = function() {
 		/* Acquire a WakeLock on the screen. */
@@ -115,7 +129,7 @@ define(['zepto', 'sounds', 'validation'], function($, sounds, validation) {
 		}
 
 		// Short beep 1s, 2s, 3s, and 4s before end.
-		beep_vals = [1000, 2000, 3000, 4000];
+		var beep_vals = [1000, 2000, 3000, 4000];
 		for (var i = 0; i < beep_vals.length ; i++) {
 			if (timer.value == beep_vals[i]) {
 				setTimeout(sounds.play_countdown, 10); // Ensure asynchronous execution.
@@ -208,6 +222,7 @@ define(['zepto', 'sounds', 'validation'], function($, sounds, validation) {
 		settings.initial_time = 1000 * (minutes * 60 + seconds);
 		settings.increment = 1000 * parseInt($('#increment').val());
 		settings.enable_sound = $('#enable_sound').prop('checked');
+		storage.save_settings(settings);
 		init();
 		$('#settings').css('display', 'none');
 		$('#time').css('display', 'block');

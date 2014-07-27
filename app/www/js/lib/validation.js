@@ -1,32 +1,38 @@
 /* Validate the numerical inputs in settings. */
 
-define(['zepto'], function($) {
+/*jslint browser: true, plusplus: true, todo: true, nomen: true */
 
-		/* Replace an empty value with zero. */
-		supply_default = function(input) {
-			if (input.value == '') {input.value = '0'};
-		};
+var define;
 
-		is_valid = function(input) {
-			number = parseInt(input.value);
-			if (isNaN(number) || number < 0) {return false} else {return true};
-		};
+define(['zepto'], function ($) {
+    "use strict";
+    var supply_default, is_valid, validate_numerical;
 
-		validate_numerical = function(inputs) {
-			validated = true;
-			for (var i = 0; i < inputs.length; i++) {
-				input = inputs[i];
-				supply_default(input);
-				if (!is_valid(input)) {
-					validated = false;
-					$(input).addClass('invalid_input');
-				} else {$(input).removeClass('invalid_input')};
-			}
-			return validated;
-		};
-		
-		return {
-				validate_numerical: validate_numerical
-		}
+    /* Replace an empty value with zero. */
+    supply_default = function (input) {
+        if (input.value === '') { input.value = '0'; }
+    };
 
+    is_valid = function (input) {
+        var number = parseInt(input.value, 10);
+        if (isNaN(number) || number < 0) { return false; }
+        return true;
+    };
+
+    validate_numerical = function (inputs) {
+        var validated = true, input, i;
+        for (i = 0; i < inputs.length; i++) {
+            input = inputs[i];
+            supply_default(input);
+            if (!is_valid(input)) {
+                validated = false;
+                $(input).addClass('invalid_input');
+            } else { $(input).removeClass('invalid_input'); }
+        }
+        return validated;
+    };
+
+    return {
+        validate_numerical: validate_numerical
+    };
 });

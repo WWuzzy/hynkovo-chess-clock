@@ -2,38 +2,38 @@
 
 /* TODO: port to Web Audio API */
 
-var define, Audio, Float32Array;
+var define, Audio;
 
 define(function () {
     "use strict";
     var
         i,
-		output = new Audio(),
-        samples_countdown = new Float32Array(11025),
-        samples_time_expired = new Float32Array(44100),
-        click_sound = new Audio("sounds/click.wav");
+        context = new window.AudioContext(),
+        click_sound = new Audio("sounds/click.wav"),
+        oscillator = context.createOscillator(),
+        gainNode = context.createGain();
 
-    output.mozSetup(1, 44100);
 
-    /* The short beep during countdown. */
-    for (i = 0; i < samples_countdown.length; i++) {
-        samples_countdown[i] = Math.sin(i / 15);
-    }
+	oscillator.connect(gainNode);
+	// Gain and frequency values are empirical; there's nothing special about them.
+	gainNode.gain.value = 0.16;
+	oscillator.frequency.value = 940;
+	oscillator.start();
 
-    /* The long beep after end of game. */
-    for (i = 0; i < samples_time_expired.length; i++) {
-        samples_time_expired[i] = Math.sin(i / 15);
-    }
+	function beep(duration) {
+		gainNode.connect(context.destination);
+		setTimeout(function () {gainNode.disconnect(context.destination);}, duration);
+	}
 
     return {
         play_countdown: function () {
-            output.mozWriteAudio(samples_countdown);
+			beep(250);
         },
         play_time_expired: function () {
-            output.mozWriteAudio(samples_time_expired);
+			beep(1000);
         },
         play_click: function () {
-            click_sound.play();
+			click_sound.play();
         }
     };
 });
